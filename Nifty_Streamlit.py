@@ -111,20 +111,13 @@ count = 0
 max_loss = 0
 max_profit = 0
 
-placeholder = st.empty()
-placeholder1 = st.empty()
-placeholder2 = st.empty()
-placeholder3 = st.empty()
-placeholder4 = st.empty()
-placeholder5 = st.empty()
-
 while True:
-
+    i = 0
     now = datetime.datetime.now()
     tstamp = now + offset
     tstamp = tstamp.strftime("%H:%M:%S")
     print(f"{tstamp} | Market is closed")
-    placeholder4.empty()
+    placeholder4 = st.empty()
     with placeholder4.container():
         st.divider()
         st.header(f"{tstamp} | Market is closed")
@@ -168,6 +161,44 @@ while True:
         max_profit = 0
 
     while ((tstamp > "09:20:00") and (tstamp < "15:25:00")):
+        if (i != 0):
+            placeholder = st.empty()
+            placeholder1 = st.empty()
+            placeholder2 = st.empty()
+            placeholder3 = st.empty()
+            with placeholder.container():
+                st.divider()
+                col1, col2, col3, col4 = st.columns(4)
+                col1.metric("Time", f"{tstamp}")
+                col2.metric("Nifty 50", f"{spot}")
+                col3.metric("Current Premium", f"{round(curr_put + curr_call, 2)}")
+                col4.metric("Sold Premium", f"{sold_premium}")
+
+            with placeholder1.container():
+                st.text(" ")
+                column_names = ["Instrument", "Entry", "Current", "PNL" ]
+                display = pd.DataFrame(columns=column_names)
+                display.loc[0, 'Instrument'] = f"{call_strike} CE"
+                display.loc[0, 'Entry'] = ltp_call
+                display.loc[0, 'Current'] = curr_call
+                display.loc[0, 'PNL'] = round(ltp_call - curr_call, 2)
+                display.loc[1, 'Instrument'] = f"{put_strike} PE"
+                display.loc[1, 'Entry'] = ltp_put
+                display.loc[1, 'Current'] = curr_put
+                display.loc[1, 'PNL'] = round(ltp_put - curr_put, 2)
+                st.table(display)
+                
+            with placeholder2.container():
+                st.text(" ")
+                col1, col2, col3= st.columns(3)
+                col1.metric("Realised PNL", f"{pnl}")
+                col2.metric("Unrealised PNL", f"{curr_pnl}")
+                col3.metric("Total PNL", f"{total_pnl}")
+    
+            with placeholder3.container():
+                st.text(" ")
+                st.line_chart(csv_log['PNL'], color=["#FFEF00"])
+
         placeholder5.empty()
         now = datetime.datetime.now()
         tstamp = now + offset
@@ -196,6 +227,7 @@ while True:
                 max_loss = total_pnl
             print(f"DAY ENDED! PNL = {total_pnl} | Max Loss = {max_loss} | Total Adjustments = {count} | Max Profit = {max_profit}")
             log_text(f"DAY ENDED! PNL = {total_pnl} | Max Loss = {max_loss} | Total Adjustments = {count} | Max Profit = {max_profit}")
+            placeholder5 = st.empty()
             with placeholder5.container():
                 st.divider()
                 col1, col2, col3, col4 = st.columns(4)
@@ -330,46 +362,13 @@ while True:
         csv_log.loc[i, 'Current Premium'] = round(curr_put + curr_call, 2)
         csv_log.loc[i, 'PNL'] = total_pnl
 
-        placeholder = st.empty()
-        placeholder1 = st.empty()
-        placeholder2 = st.empty()
-        placeholder3 = st.empty()
-
-        with placeholder.container():
-            st.divider()
-            col1, col2, col3, col4 = st.columns(4)
-            col1.metric("Time", f"{tstamp}")
-            col2.metric("Nifty 50", f"{spot}")
-            col3.metric("Current Premium", f"{round(curr_put + curr_call, 2)}")
-            col4.metric("Sold Premium", f"{sold_premium}")
-
-        with placeholder1.container():
-            st.text(" ")
-            column_names = ["Instrument", "Entry", "Current", "PNL" ]
-            display = pd.DataFrame(columns=column_names)
-            display.loc[0, 'Instrument'] = f"{call_strike} CE"
-            display.loc[0, 'Entry'] = ltp_call
-            display.loc[0, 'Current'] = curr_call
-            display.loc[0, 'PNL'] = round(ltp_call - curr_call, 2)
-            display.loc[1, 'Instrument'] = f"{put_strike} PE"
-            display.loc[1, 'Entry'] = ltp_put
-            display.loc[1, 'Current'] = curr_put
-            display.loc[1, 'PNL'] = round(ltp_put - curr_put, 2)
-            st.table(display)
-            
-        with placeholder2.container():
-            st.text(" ")
-            col1, col2, col3= st.columns(3)
-            col1.metric("Realised PNL", f"{pnl}")
-            col2.metric("Unrealised PNL", f"{curr_pnl}")
-            col3.metric("Total PNL", f"{total_pnl}")
-
-        with placeholder3.container():
-            st.text(" ")
-            st.line_chart(csv_log['PNL'], color=["#FFEF00"])
-
         today = datetime.datetime.now().date().strftime("%d_%m_%Y")
         csv_log.to_csv(f'Trade_Logs_{today}.csv', index=False)
         i += 1
         time.sleep(2.5)
+        placeholder.empty()
+        placeholder1.empty()
+        placeholder2.empty()
+        placeholder3.empty()
     time.sleep(60)
+    placeholder4.empty()
