@@ -111,6 +111,12 @@ count = 0
 max_loss = 0
 max_profit = 0
 
+placeholder = st.empty()
+placeholder1 = st.empty()
+placeholder2 = st.empty()
+placeholder3 = st.empty()
+placeholder4 = st.empty()
+placeholder5 = st.empty()
 
 while True:
 
@@ -118,7 +124,6 @@ while True:
     tstamp = now + offset
     tstamp = tstamp.strftime("%H:%M:%S")
     print(f"{tstamp} | Market is closed")
-    placeholder4 = st.empty()
     placeholder4.empty()
     with placeholder4.container():
         st.divider()
@@ -163,7 +168,6 @@ while True:
         max_profit = 0
 
     while ((tstamp > "09:20:00") and (tstamp < "15:25:00")):
-        placeholder5 = st.empty()
         placeholder5.empty()
         now = datetime.datetime.now()
         tstamp = now + offset
@@ -331,11 +335,6 @@ while True:
         placeholder2 = st.empty()
         placeholder3 = st.empty()
 
-        placeholder.empty()
-        placeholder1.empty()
-        placeholder2.empty()
-        placeholder3.empty()
-        
         with placeholder.container():
             st.divider()
             col1, col2, col3, col4 = st.columns(4)
