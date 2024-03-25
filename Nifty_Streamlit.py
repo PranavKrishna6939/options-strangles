@@ -12,8 +12,6 @@ import time
 #mobile_number = 'number'
 #password = 'password'
 
-st.title("""Nifty Strangle :green[PNL] Tracker""")
-
 def on_message(message):
     print(message)    
 def on_error(error_message):
@@ -110,6 +108,8 @@ total_pnl = 0
 count = 0
 max_loss = 0
 max_profit = 0
+
+st.title("""Nifty Strangle :green[PNL] Tracker""")
 
 while True:
     i = 0
