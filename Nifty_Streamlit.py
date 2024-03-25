@@ -12,6 +12,8 @@ consumer_secret = 'key'
 mobile_number = 'number'
 password = 'password'
 
+st.title("""Nifty Strangle :green[PNL] Tracker""")
+
 def on_message(message):
     print(message)    
 def on_error(error_message):
@@ -116,6 +118,11 @@ while True:
     tstamp = now + offset
     tstamp = tstamp.strftime("%H:%M:%S")
     print(f"{tstamp} | Market is closed")
+    placeholder4 = st.empty()
+    placeholder4.empty()
+    with placeholder4.container():
+        st.divider()
+        st.header(f"{tstamp} | Market is closed")
 
     if ((tstamp > "09:18:00") and (tstamp < "09:20:00")) :
 
@@ -155,8 +162,9 @@ while True:
         max_loss = 0
         max_profit = 0
 
-    while ((tstamp > "09:20:00") and (tstamp < "15:25:00")): 
-
+    while ((tstamp > "09:20:00") and (tstamp < "15:25:00")):
+        placeholder5 = st.empty()
+        placeholder5.empty()
         now = datetime.datetime.now()
         tstamp = now + offset
         tstamp = tstamp.strftime("%H:%M:%S")
@@ -184,6 +192,14 @@ while True:
                 max_loss = total_pnl
             print(f"DAY ENDED! PNL = {total_pnl} | Max Loss = {max_loss} | Total Adjustments = {count} | Max Profit = {max_profit}")
             log_text(f"DAY ENDED! PNL = {total_pnl} | Max Loss = {max_loss} | Total Adjustments = {count} | Max Profit = {max_profit}")
+            with placeholder5.container():
+                st.divider()
+                col1, col2, col3, col4 = st.columns(4)
+                col1.metric("PNL", f"{total_pnl}")
+                col2.metric("Max Loss", f"{max_loss}")
+                col3.metric("Adjustments", f"{count}")
+                col4.metric("Max Profit", f"{max_profit}")
+            
             today = datetime.datetime.now().date().strftime("%d_%m_%Y")
             csv_log.to_csv(f'Trade_Logs_{today}.csv', index=False)
             break
@@ -310,14 +326,16 @@ while True:
         csv_log.loc[i, 'Current Premium'] = round(curr_put + curr_call, 2)
         csv_log.loc[i, 'PNL'] = total_pnl
 
-        st.title("""Nifty Strangle :green[PNL] Tracker""")
+        placeholder = st.empty()
+        placeholder1 = st.empty()
+        placeholder2 = st.empty()
+        placeholder3 = st.empty()
 
         placeholder.empty()
         placeholder1.empty()
         placeholder2.empty()
         placeholder3.empty()
-
-        placeholder = st.empty()
+        
         with placeholder.container():
             st.divider()
             col1, col2, col3, col4 = st.columns(4)
@@ -326,8 +344,6 @@ while True:
             col3.metric("Current Premium", f"{round(curr_put + curr_call, 2)}")
             col4.metric("Sold Premium", f"{sold_premium}")
 
-
-        placeholder1 = st.empty()
         with placeholder1.container():
             st.text(" ")
             column_names = ["Instrument", "Entry", "Current", "PNL" ]
@@ -341,9 +357,7 @@ while True:
             display.loc[1, 'Current'] = curr_put
             display.loc[1, 'PNL'] = round(ltp_put - curr_put, 2)
             st.table(display)
-
-
-        placeholder2 = st.empty()
+            
         with placeholder2.container():
             st.text(" ")
             col1, col2, col3= st.columns(3)
@@ -351,7 +365,6 @@ while True:
             col2.metric("Unrealised PNL", f"{curr_pnl}")
             col3.metric("Total PNL", f"{total_pnl}")
 
-        placeholder3 = st.empty()
         with placeholder3.container():
             st.text(" ")
             st.line_chart(csv_log['PNL'], color=["#FFEF00"])
