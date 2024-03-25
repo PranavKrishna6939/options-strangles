@@ -65,9 +65,9 @@ def log_text(message):
         f.write(message + "\n")
 
 # EXPIRY
-exp_year = input("Expiry Year: ")
-exp_month = input("Expiry Month: ")
-exp_day = input("Expiry Day: ")
+exp_year = 2024
+exp_month = int(input("Expiry Month: "))
+exp_day = int(input("Expiry Day: "))
 expiry = get_expiry(exp_year, exp_month, exp_day)
 offset = datetime.timedelta(hours=5, minutes=30)
 
@@ -114,8 +114,7 @@ while True:
     tstamp = tstamp.strftime("%H:%M:%S")
     print(f"{tstamp} | Market is closed")
 
-    if ((tstamp > "09:18:00") and (tstamp < "09:20:00")) :
-
+    if ((tstamp > "09:18:00") and (tstamp < "09:20:00")):
         spot = get_ltp_index()
         print("Spot price =", spot)
         atm_strike = round_off(spot)
