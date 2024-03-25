@@ -6,10 +6,10 @@ import calendar
 import time
 
 # CREDENTIALS
-consumer_key = 'key'
-consumer_secret = 'key'
-mobile_number = 'key'
-password = 'key'
+#consumer_key = 'key'
+#consumer_secret = 'key'
+#mobile_number = 'key'
+#password = 'key'
 
 def on_message(message):
     print(message)    
@@ -109,7 +109,6 @@ max_loss = 0
 max_profit = 0
 
 while True:
-    i = 0
     now = datetime.datetime.now()
     tstamp = now + offset
     tstamp = tstamp.strftime("%H:%M:%S")
