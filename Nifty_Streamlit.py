@@ -7,10 +7,10 @@ import calendar
 import time
 
 # CREDENTIALS
-consumer_key = 'key'
-consumer_secret = 'key'
-mobile_number = 'number'
-password = 'password'
+#consumer_key = 'key'
+#consumer_secret = 'key'
+#mobile_number = 'number'
+#password = 'password'
 
 st.title("""Nifty Strangle :green[PNL] Tracker""")
 
