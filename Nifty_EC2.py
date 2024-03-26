@@ -4,6 +4,7 @@ import pandas as pd
 import datetime
 import calendar
 import time
+import sys 
 
 # CREDENTIALS
 #consumer_key = 'key'
@@ -164,6 +165,7 @@ while True:
             elif (temp == -1):
                 print(f"{tstamp} | Error fetching Quote!")
                 log_text(f"{tstamp} | Error fetching Quote!")
+                sys.exit(101)
 
             temp = get_ltp(put_strike, "PE" , expiry)
             if (temp != -1):
@@ -171,6 +173,7 @@ while True:
             elif (temp == -1):
                 print(f"{tstamp} | Error fetching Quote!")
                 log_text(f"{tstamp} | Error fetching Quote!")
+                sys.exit(101)
   
             pnl = round(pnl, 2)
             if (total_pnl > max_profit):
@@ -192,6 +195,7 @@ while True:
         elif (temp == -1):
             print(f"{tstamp} | Error fetching Quote!")
             log_text(f"{tstamp} | Error fetching Quote!")
+            sys.exit(101)
 
         new_atm = round_off(spot)
         new_put = round_off(spot - straddle)
@@ -213,6 +217,7 @@ while True:
             elif (temp == -1):
                 print(f"{tstamp} | Error fetching Quote!")
                 log_text(f"{tstamp} | Error fetching Quote!")
+                sys.exit(101)
 
             temp = get_ltp(new_call, "CE" , expiry)
             if (temp != -1):
@@ -220,6 +225,7 @@ while True:
             elif (temp == -1):
                 print(f"{tstamp} | Error fetching Quote!")
                 log_text(f"{tstamp} | Error fetching Quote!")
+                sys.exit(101)
 
             print(f"Exited {call_strike} CE at {exit_price} and entered {new_call} CE at {entry_price}")
             log_text(f"Changing Strikes | Exited {call_strike} CE at {exit_price} and entered {new_call} CE at {entry_price}")
@@ -242,6 +248,7 @@ while True:
             elif (temp == -1):
                 print(f"{tstamp} | Error fetching Quote!")
                 log_text(f"{tstamp} | Error fetching Quote!")
+                sys.exit(101)
 
             temp = get_ltp(new_put, "PE" , expiry)
             if (temp != -1):
@@ -249,6 +256,7 @@ while True:
             elif (temp == -1):
                 print(f"{tstamp} | Error fetching Quote!")
                 log_text(f"{tstamp} | Error fetching Quote!")
+                sys.exit(101)
 
             print(f"Exited {put_strike} PE at {exit_price} and entered {new_put} PE at {entry_price}")
             log_text(f"Changing Strikes | Exited {put_strike} PE at {exit_price} and entered {new_put} PE at {entry_price}")
@@ -262,12 +270,12 @@ while True:
             count += 1
 
         temp = get_ltp(put_strike, "PE" , expiry)
-
         if (temp != -1):
             curr_put = temp
         elif (temp == -1):
             print(f"{tstamp} | Error fetching Quote!")
-            log_text(f"{tstamp} | Error fetching Quote!") 
+            log_text(f"{tstamp} | Error fetching Quote!")
+            sys.exit(101)
 
         temp = get_ltp(call_strike, "CE" , expiry)
         if (temp != -1):
@@ -275,6 +283,7 @@ while True:
         elif (temp == -1):
             print(f"{tstamp} | Error fetching Quote!")
             log_text(f"{tstamp} | Error fetching Quote!")
+            sys.exit(101)
 
         curr_pnl = sold_premium - curr_put - curr_call
         curr_pnl = round(curr_pnl, 2)
