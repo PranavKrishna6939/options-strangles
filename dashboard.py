@@ -7,6 +7,7 @@ import sys
 
 offset = datetime.timedelta(hours=5, minutes=30)
 st.title("""Nifty Strangle :green[PNL] Tracker""")
+st.divider()
 
 while True:
     now = datetime.datetime.now()
@@ -16,7 +17,8 @@ while True:
 
     placeholder4 = st.empty()
     with placeholder4.container():
-        st.subheader(f"{tstamp} | Market is closed")
+        st.metric("Time", f"{tstamp}")
+        st.header("""Market is :red[Closed]""")
 
     while ((tstamp > "09:25:00") and (tstamp < "15:21:00")):
         now = datetime.datetime.now()
@@ -35,7 +37,6 @@ while True:
         re_pnl = round(re_pnl, 2)
         placeholder = st.empty()
         with placeholder.container():
-            st.divider()
             col1, col2, col3, col4 = st.columns(4)
             col1.metric("Time", f"{df.loc[i, 'Timestamp']}")
             col2.metric("Nifty 50", f"{df.loc[i, 'Spot']}")
