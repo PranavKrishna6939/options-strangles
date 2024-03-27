@@ -4,7 +4,8 @@ import pandas as pd
 import datetime
 import calendar
 import time
-import sys 
+import sys
+import json
 
 # CREDENTIALS
 #consumer_key = 'key'
@@ -22,6 +23,9 @@ client.login(mobilenumber = mobile_number, password = password)
 
 otp = input("Enter OTP: ")
 client.session_2fa(str(otp))
+reuse_session = client.reuse_session
+with open("creds.json","w") as file:
+    file.write(json.dumps(reuse_session))
 
 nfo_url = client.scrip_master(exchange_segment = "NFO")
 nfo_df = pd.read_csv(nfo_url)
@@ -62,6 +66,7 @@ def get_expiry(exp_year, exp_month, exp_day):
 def log_text(message):
     today = datetime.datetime.now().date().strftime("%d_%m_%Y")
     filename = f'Text_Logs_{today}.txt'
+    print(message)
     with open(filename, "a") as f:
         f.write(message + "\n")
 
@@ -115,7 +120,8 @@ while True:
     tstamp = tstamp.strftime("%H:%M:%S")
     print(f"{tstamp} | Market is closed")
 
-    if ((tstamp > "09:18:00") and (tstamp < "09:20:00")):
+    if ((tstamp > "09:18:00") and (tstamp < "09:20:00")) :
+
         spot = get_ltp_index()
         print("Spot price =", spot)
         atm_strike = round_off(spot)
@@ -142,8 +148,6 @@ while True:
         sold_premium = round(sold_premium, 2)
         print("Sold premium =", sold_premium)
 
-        column_names = ['Index','Timestamp', 'Spot', 'Put Strike','Put LTP', 'Put Entry', 'Call Strike', 'Call LTP', 'Call Entry','Sold Premium', 'Current Premium', 'PNL']
-        csv_log = pd.DataFrame(columns=column_names)
         i = 0
         pnl = 0
         curr_pnl = 0
@@ -165,7 +169,9 @@ while True:
             elif (temp == -1):
                 print(f"{tstamp} | Error fetching Quote!")
                 log_text(f"{tstamp} | Error fetching Quote!")
-                sys.exit(101)
+                with open("creds.json","w") as file:
+                    reuse_session = json.load(file)
+                client = NeoAPI(access_token="",environment="prod", reuse_session= reuse_session )
 
             temp = get_ltp(put_strike, "PE" , expiry)
             if (temp != -1):
@@ -173,14 +179,15 @@ while True:
             elif (temp == -1):
                 print(f"{tstamp} | Error fetching Quote!")
                 log_text(f"{tstamp} | Error fetching Quote!")
-                sys.exit(101)
+                with open("creds.json","w") as file:
+                    reuse_session = json.load(file)
+                client = NeoAPI(access_token="",environment="prod", reuse_session= reuse_session )
   
             pnl = round(pnl, 2)
             if (total_pnl > max_profit):
                 max_profit = total_pnl
             elif (total_pnl < max_loss):
                 max_loss = total_pnl
-            print(f"DAY ENDED! PNL = {total_pnl} | Max Loss = {max_loss} | Total Adjustments = {count} | Max Profit = {max_profit}")
             log_text(f"DAY ENDED! PNL = {total_pnl} | Max Loss = {max_loss} | Total Adjustments = {count} | Max Profit = {max_profit}")
             today = datetime.datetime.now().date().strftime("%d_%m_%Y")
             csv_log.to_csv(f'Trade_Logs_{today}.csv', index=False)
@@ -193,9 +200,10 @@ while True:
         if (temp != -1):
             spot = temp
         elif (temp == -1):
-            print(f"{tstamp} | Error fetching Quote!")
             log_text(f"{tstamp} | Error fetching Quote!")
-            sys.exit(101)
+            with open("creds.json","w") as file:
+                reuse_session = json.load(file)
+            client = NeoAPI(access_token="",environment="prod", reuse_session= reuse_session )
 
         new_atm = round_off(spot)
         new_put = round_off(spot - straddle)
@@ -215,17 +223,19 @@ while True:
             if (temp != -1):
                 exit_price = temp
             elif (temp == -1):
-                print(f"{tstamp} | Error fetching Quote!")
                 log_text(f"{tstamp} | Error fetching Quote!")
-                sys.exit(101)
+                with open("creds.json","w") as file:
+                    reuse_session = json.load(file)
+                client = NeoAPI(access_token="",environment="prod", reuse_session= reuse_session)
 
             temp = get_ltp(new_call, "CE" , expiry)
             if (temp != -1):
                 entry_price = temp
             elif (temp == -1):
-                print(f"{tstamp} | Error fetching Quote!")
                 log_text(f"{tstamp} | Error fetching Quote!")
-                sys.exit(101)
+                with open("creds.json","w") as file:
+                    reuse_session = json.load(file)
+                client = NeoAPI(access_token="",environment="prod", reuse_session= reuse_session )
 
             print(f"Exited {call_strike} CE at {exit_price} and entered {new_call} CE at {entry_price}")
             log_text(f"Changing Strikes | Exited {call_strike} CE at {exit_price} and entered {new_call} CE at {entry_price}")
@@ -246,19 +256,20 @@ while True:
             if (temp != -1):
                 exit_price = temp
             elif (temp == -1):
-                print(f"{tstamp} | Error fetching Quote!")
                 log_text(f"{tstamp} | Error fetching Quote!")
-                sys.exit(101)
+                with open("creds.json","w") as file:
+                    reuse_session = json.load(file)
+                client = NeoAPI(access_token="",environment="prod", reuse_session= reuse_session )
 
             temp = get_ltp(new_put, "PE" , expiry)
             if (temp != -1):
                 entry_price = temp
             elif (temp == -1):
-                print(f"{tstamp} | Error fetching Quote!")
                 log_text(f"{tstamp} | Error fetching Quote!")
-                sys.exit(101)
+                with open("creds.json","w") as file:
+                    reuse_session = json.load(file)
+                client = NeoAPI(access_token="",environment="prod", reuse_session= reuse_session )
 
-            print(f"Exited {put_strike} PE at {exit_price} and entered {new_put} PE at {entry_price}")
             log_text(f"Changing Strikes | Exited {put_strike} PE at {exit_price} and entered {new_put} PE at {entry_price}")
 
             pnl += ltp_put - exit_price
@@ -273,17 +284,19 @@ while True:
         if (temp != -1):
             curr_put = temp
         elif (temp == -1):
-            print(f"{tstamp} | Error fetching Quote!")
             log_text(f"{tstamp} | Error fetching Quote!")
-            sys.exit(101)
+            with open("creds.json","w") as file:
+                reuse_session = json.load(file)
+            client = NeoAPI(access_token="",environment="prod", reuse_session= reuse_session) 
 
         temp = get_ltp(call_strike, "CE" , expiry)
         if (temp != -1):
             curr_call = temp 
         elif (temp == -1):
-            print(f"{tstamp} | Error fetching Quote!")
             log_text(f"{tstamp} | Error fetching Quote!")
-            sys.exit(101)
+            with open("creds.json","w") as file:
+                reuse_session = json.load(file)
+            client = NeoAPI(access_token="",environment="prod", reuse_session= reuse_session ) 
 
         curr_pnl = sold_premium - curr_put - curr_call
         curr_pnl = round(curr_pnl, 2)
@@ -298,7 +311,6 @@ while True:
         now = datetime.datetime.now()
         tstamp = now + offset
         tstamp = tstamp.strftime("%H:%M:%S")
-        print(f"{tstamp} | {put_strike} PE current:{curr_put} entry:{ltp_put} | {call_strike} CE current:{curr_call} entry:{ltp_call} | PNL = {total_pnl}")
         log_text(f"{tstamp} | {put_strike} PE current:{curr_put} entry:{ltp_put} | {call_strike} CE current:{curr_call} entry:{ltp_call} | PNL = {total_pnl}")
 
         csv_log.loc[i, 'Index'] = i
