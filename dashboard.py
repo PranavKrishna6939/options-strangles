@@ -21,6 +21,7 @@ while True:
         st.header("""Market is :red[Closed]""")
 
     while ((tstamp > "09:25:00") and (tstamp < "15:21:00")):
+        placeholder4.empty()
         now = datetime.datetime.now()
         tstamp = now + offset
         tstamp = tstamp.strftime("%H:%M:%S")
