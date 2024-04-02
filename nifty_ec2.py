@@ -236,7 +236,7 @@ while True:
         max_profit = 0
 
 
-    while ((tstamp > "09:20:00") and (tstamp < "15:22:00")):
+    while ((tstamp > "09:20:00") and (tstamp < "15:21:00")):
         now = datetime.datetime.now()
         tstamp = now + offset
         tstamp = tstamp.strftime("%H:%M:%S")
@@ -267,6 +267,21 @@ while True:
             elif (total_pnl < max_loss):
                 max_loss = total_pnl
 
+            csv_log.loc[i, 'Index'] = i
+            csv_log.loc[i, 'Timestamp'] = tstamp
+            csv_log.loc[i, 'Spot'] = spot
+            csv_log.loc[i, 'Put Strike'] = f"{put_strike} PE"
+            csv_log.loc[i, 'Put LTP'] = curr_put
+            csv_log.loc[i, 'Put Entry'] = ltp_put
+            csv_log.loc[i, 'Call Strike'] = f"{call_strike} CE"
+            csv_log.loc[i, 'Call LTP'] = curr_call
+            csv_log.loc[i, 'Call Entry'] = ltp_call
+            csv_log.loc[i, 'Sold Premium'] = sold_premium
+            csv_log.loc[i, 'Current Premium'] = round(curr_put + curr_call, 2)
+            csv_log.loc[i, 'PNL'] = total_pnl
+            csv_log.loc[i, 'Adjustments'] = count
+            csv_log.loc[i, 'Max Profit'] = max_profit
+            csv_log.loc[i, 'Max Loss'] = max_loss
             log_text(f"DAY ENDED! PNL = {total_pnl} | Max Loss = {max_loss} | Total Adjustments = {count} | Max Profit = {max_profit}")
             today = datetime.datetime.now().date().strftime("%d_%m_%Y")
             csv_log.to_csv(f'Trade_Logs_{today}.csv', index=False)
@@ -404,7 +419,10 @@ while True:
         csv_log.loc[i, 'Sold Premium'] = sold_premium
         csv_log.loc[i, 'Current Premium'] = round(curr_put + curr_call, 2)
         csv_log.loc[i, 'PNL'] = total_pnl
-
+        csv_log.loc[i, 'Adjustments'] = count
+        csv_log.loc[i, 'Max Profit'] = max_profit
+        csv_log.loc[i, 'Max Loss'] = max_loss
+        
         today = datetime.datetime.now().date().strftime("%d_%m_%Y")
         csv_log.to_csv(f'Trade_Logs_{today}.csv', index=False)
         i += 1
