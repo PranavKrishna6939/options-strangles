@@ -6,6 +6,15 @@ import time
 import sys
 
 offset = datetime.timedelta(hours=5, minutes=30)
+st.markdown(
+    """
+    <style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 st.title("""Nifty Strangle :green[PNL] Tracker""")
 st.divider()
 
