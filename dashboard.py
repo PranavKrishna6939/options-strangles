@@ -15,7 +15,6 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-st.set_page_config(page_title='JJBigDub')
 st.title("""Nifty Strangle :green[PNL] Tracker""")
 st.divider()
 
