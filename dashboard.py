@@ -15,6 +15,7 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+st.set_page_config(page_title='JJBigDub')
 st.title("""Nifty Strangle :green[PNL] Tracker""")
 st.divider()
 
@@ -29,7 +30,7 @@ while True:
         st.metric("Time", f"{tstamp}")
         st.header("""Market is :red[Closed]""")
 
-    while ((tstamp > "09:25:00") and (tstamp < "15:21:00")):
+    while ((tstamp > "09:22:00") and (tstamp < "15:21:00")):
         placeholder4.empty()
         now = datetime.datetime.now()
         tstamp = now + offset
@@ -52,7 +53,7 @@ while True:
             col2.metric("Nifty 50", f"{df.loc[i, 'Spot']}")
             col3.metric("Current Premium", f"{round(df.loc[i, 'Current Premium'], 2)}")
             col4.metric("Sold Premium", f"{df.loc[i, 'Sold Premium']}")
-
+            
         placeholder1 = st.empty()
         with placeholder1.container():
             st.text(" ")
@@ -76,17 +77,24 @@ while True:
             col1.metric("Realised PNL", f"{re_pnl}")
             col2.metric("Unrealised PNL", f"{curr_pnl}")
             col3.metric("Total PNL", f"{df.loc[i, 'PNL']}")
-        
+            
+        placeholder5 = st.empty()
+        with placeholder5.container():
+            col1, col2, col3= st.columns(3)
+            col1.metric("Adjustments", f"{df.loc[i, 'Adjustments']}")
+            col2.metric("Max Loss", f"{df.loc[i, 'Max Loss']}")
+            col3.metric("Max Profit", f"{df.loc[i, 'Max Profit']}")
+    
         placeholder3 = st.empty()
         with placeholder3.container():
             st.text(" ")
-            df_graph = df[0 : i]
-            st.line_chart(df_graph['PNL'], color=["#FFEF00"])
+            st.line_chart(df['PNL'], color=["#FFEF00"])
         
         time.sleep(3)
         placeholder.empty()
         placeholder1.empty()
         placeholder2.empty()
         placeholder3.empty()
+        placeholder5.empty()
     time.sleep(60)
     placeholder4.empty()
