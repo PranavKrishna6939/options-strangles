@@ -72,6 +72,29 @@ def log_text(message):
     with open(filename, "a") as f:
         f.write(message + "\n")
 
+def buy_order(strike, opt_type, expiry):
+    tmp = nfo_df[(nfo_df["pSymbolName"] == 'NIFTY') & (nfo_df["pExpiryDate"] == expiry) & (nfo_df["dStrikePrice;"] == strike*100) & (nfo_df["pOptionType"]==opt_type)]
+    tmp = tmp.reset_index(drop=True)
+    token = tmp.loc[0, 'pTrdSymbol']
+    try:
+        client.place_order(exchange_segment="nse_fo", product="NRML", order_type="MKT", quantity="1", validity="DAY", trading_symbol=token,
+                       transaction_type="B")
+        log_text(f"Order Placed | Bought {strike} {opt_type}")
+    except Exception as e:
+        log_text("Exception when calling OrderApi->place_order: %s\n" % e)
+
+def sell_order(strike, opt_type, expiry):
+    tmp = nfo_df[(nfo_df["pSymbolName"] == 'NIFTY') & (nfo_df["pExpiryDate"] == expiry) & (nfo_df["dStrikePrice;"] == strike*100) & (nfo_df["pOptionType"]==opt_type)]
+    tmp = tmp.reset_index(drop=True)
+    token = tmp.loc[0, 'pTrdSymbol']
+    try:
+        client.place_order(exchange_segment="nse_fo", product="NRML", order_type="MKT", quantity="1", validity="DAY", trading_symbol=token,
+                       transaction_type="S")
+        log_text(f"Order Placed | Sold {strike} {opt_type}")
+    except Exception as e:
+        log_text("Exception when calling OrderApi->place_order: %s\n" % e)
+
+
 # EXPIRY
 exp_year = 2024
 exp_month = int(input("Expiry Month: "))
@@ -223,6 +246,9 @@ while True:
                 ltp_call = temp
         print(call_strike,"CE =", ltp_call)
 
+        sell_order(call_strike, "CE", expiry)
+        sell_order(put_strike, "PE", expiry)
+
         sold_premium = ltp_put + ltp_call
         sold_premium = round(sold_premium, 2)
         print("Sold premium =", sold_premium)
@@ -315,7 +341,8 @@ while True:
                     reuse_session = json.load(file)
                 client = NeoAPI(access_token="test",environment="prod", reuse_session=reuse_session )
 
-            print(f"Exited {call_strike} CE at {exit_price} and entered {new_call} CE at {entry_price}")
+            buy_order(call_strike, "CE", expiry)
+            sell_order(new_call, "CE", expiry)
             log_text(f"Changing Strikes | Exited {call_strike} CE at {exit_price} and entered {new_call} CE at {entry_price}")
 
             pnl += ltp_call - exit_price
@@ -348,6 +375,8 @@ while True:
                     reuse_session = json.load(file)
                 client = NeoAPI(access_token="test",environment="prod", reuse_session=reuse_session )
 
+            buy_order(put_strike, "PE", expiry)
+            sell_order(new_put, "PE", expiry)
             log_text(f"Changing Strikes | Exited {put_strike} PE at {exit_price} and entered {new_put} PE at {entry_price}")
 
             pnl += ltp_put - exit_price
