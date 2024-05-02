@@ -192,7 +192,7 @@ while True:
     tstamp = tstamp.strftime("%H:%M:%S")
     print(f"{tstamp} | Market is closed")
 
-    if ((tstamp > "09:18:00") and (tstamp < "09:20:00") and (entry == 0) :
+    if ((tstamp > "09:18:00") and (tstamp < "09:20:00") and (entry == 0)) :
 
         temp = get_ltp_index()
         if (temp != -1):
