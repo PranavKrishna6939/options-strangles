@@ -176,6 +176,7 @@ total_pnl = 0
 count = 0
 max_loss = 0
 max_profit = 0
+entry = 0
 
 while True:
     now = datetime.datetime.now()
@@ -183,7 +184,7 @@ while True:
     tstamp = tstamp.strftime("%H:%M:%S")
     print(f"{tstamp} | Market is closed")
 
-    if ((tstamp > "09:18:00") and (tstamp < "09:20:00")) :
+    if ((tstamp > "09:18:00") and (tstamp < "09:20:00") and (entry == 0) :
 
         temp = get_ltp_index()
         if (temp != -1):
@@ -248,6 +249,7 @@ while True:
 
         sell_order(call_strike, "CE", expiry)
         sell_order(put_strike, "PE", expiry)
+        entry = 1
 
         sold_premium = ltp_put + ltp_call
         sold_premium = round(sold_premium, 2)
