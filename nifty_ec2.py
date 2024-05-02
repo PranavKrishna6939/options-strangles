@@ -77,7 +77,7 @@ def buy_order(strike, opt_type, expiry):
     tmp = tmp.reset_index(drop=True)
     token = tmp.loc[0, 'pTrdSymbol']
     try:
-        client.place_order(exchange_segment="nse_fo", product="NRML", order_type="MKT", quantity="1", validity="DAY", trading_symbol=token,
+        client.place_order(exchange_segment="nse_fo", product="NRML", order_type="MKT", quantity="25", price = "", validity="DAY", trading_symbol=token,
                        transaction_type="B")
         log_text(f"Order Placed | Bought {strike} {opt_type}")
     except Exception as e:
@@ -88,7 +88,7 @@ def sell_order(strike, opt_type, expiry):
     tmp = tmp.reset_index(drop=True)
     token = tmp.loc[0, 'pTrdSymbol']
     try:
-        client.place_order(exchange_segment="nse_fo", product="NRML", order_type="MKT", quantity="1", validity="DAY", trading_symbol=token,
+        client.place_order(exchange_segment="nse_fo", product="NRML", order_type="MKT", quantity="25", price = "", validity="DAY", trading_symbol=token,
                        transaction_type="S")
         log_text(f"Order Placed | Sold {strike} {opt_type}")
     except Exception as e:
@@ -162,6 +162,14 @@ elif (temp == -1):
         temp = get_ltp(call_strike, "CE" , expiry)
         ltp_call = temp
 print(call_strike,"CE =", ltp_call)
+
+now = datetime.datetime.now()
+tstamp = now + offset
+tstamp = tstamp.strftime("%H:%M:%S")
+
+if (tstamp > "09:20:00"):
+    sell_order(call_strike, "CE", expiry)
+    sell_order(put_strike, "PE", expiry)
 
 sold_premium = ltp_put + ltp_call
 sold_premium = round(sold_premium, 2)
