@@ -302,6 +302,8 @@ while True:
                 max_profit = total_pnl
             elif (total_pnl < max_loss):
                 max_loss = total_pnl
+            buy_order(call_strike, "CE", expiry)
+            buy_order(put_strike, "PE", expiry)
             log_text(f"DAY ENDED! PNL = {total_pnl} | Max Loss = {max_loss} | Total Adjustments = {count} | Max Profit = {max_profit}")
             today = datetime.datetime.now().date().strftime("%d_%m_%Y")
             csv_log.to_csv(f'Trade_Logs_{today}.csv', index=False)
